@@ -6,21 +6,38 @@
         </v-card-title>
         <v-card-text>
 
+          <v-form ref="form">
             <v-row>
-                <v-col cols="3">
-                    <v-text-field v-model="nuovaData" label="Data" variant="outlined"></v-text-field>
-                </v-col>
-                <v-col cols="3">
-                    <v-text-field v-model="nuoveOre" label="Ore" variant="outlined"></v-text-field>
-                </v-col>
-                <v-col cols="3">
-                    <v-text-field v-model="nuoviMinuti" label="Minuti" variant="outlined"></v-text-field>
-                </v-col>
-                <v-col cols="3">
-                    <v-btn @click="aggiungiDettaglio()">Aggiungi</v-btn>
-                </v-col>
+              <v-col cols="3">
+                <v-text-field 
+                  v-model="nuovaData" 
+                  label="Data" 
+                  variant="outlined"
+                  :rules="[v => !!v || 'Campo obbligatorio']"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field 
+                  v-model="nuoveOre" 
+                  label="Ore" 
+                  variant="outlined"
+                  :rules="[v => !!v || 'Campo obbligatorio', v => /^\d+$/.test(v) || 'Deve essere un numero']"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field 
+                  v-model="nuoviMinuti" 
+                  label="Minuti" 
+                  variant="outlined"
+                  :rules="[v => !!v || 'Campo obbligatorio', v => /^\d+$/.test(v) || 'Deve essere un numero']"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-btn @click="aggiungiDettaglio">Aggiungi</v-btn>
+              </v-col>
             </v-row>
-  
+          </v-form>
+
           <v-table class="table">
             <thead>
               <tr>
@@ -65,6 +82,7 @@
   const nuovaData = ref("");
   const nuoveOre = ref("");
   const nuoviMinuti = ref("");
+  const form = ref(null);
   
   // Metodo per aprire la modale e caricare i dettagli
   const apri = (datiRegistro) => {
@@ -78,24 +96,41 @@
     isOpen.value = false;
   };
 
-  const aggiungiDettaglio = () => {
-    const dizionario = {
-            nuovaData: nuovaData.value,   // Passa il valore di nuovaData
-            nuoveOre: nuoveOre.value,     // Passa il valore di nuoveOre
-            nuoviMinuti: nuoviMinuti.value // Passa il valore di nuoviMinuti
-        };
+  const aggiungiDettaglio = async () => {
+    const { valid } = await form.value.validate(); // Usa await per attendere la validazione (il validate restituisce una promise)
 
-        // Aggiungi la riga dettagli alla lista
-        gestore.aggiungiRigaDettagli(registro.value.id, dizionario);
+      if (!valid) {
+          console.log("Errore: dati non validi!");
+          return; // Esce dalla funzione se i dati non sono validi
+      }
 
-        // Aggiungi la riga ai dettagli del registro
-        registroDettagli.value.push(dizionario);
+      console.log("Dati validi, aggiungo il dettaglio!");
+      
+      const dizionario = {
+          nuovaData: nuovaData.value,
+          nuoveOre: nuoveOre.value,
+          nuoviMinuti: nuoviMinuti.value
+      };
 
-        // Pulisci i campi dopo aver aggiunto i dati
-        nuovaData.value = '';
-        nuoveOre.value = '';
-        nuoviMinuti.value = '';
-    }
+      // Aggiungi la riga dettagli alla lista
+      gestore.aggiungiRigaDettagli(registro.value.id, dizionario);
+      registroDettagli.value.push(dizionario);
+
+      // Pulisci i campi dopo aver aggiunto i dati
+      nuovaData.value = '';
+      nuoveOre.value = '';
+      nuoviMinuti.value = '';
+  };
+
+  
+    const rimuoviRiga = (index) => {
+    // Rimuovi direttamente dal gestore
+      gestore.rimuoviRigaDettagli(registro.value.id, index);
+
+      // Ricarica i dettagli aggiornati dal gestore
+      registroDettagli.value = [...gestore.righe.find(r => r.id === registro.value.id)?.dettagli || []];
+    };
+
 
   
   // Espone il metodo apri() al componente principale

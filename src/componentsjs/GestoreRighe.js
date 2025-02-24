@@ -40,6 +40,21 @@ class GestoreRighe {
       }
   }
 
+  rimuoviRigaDettagli(idRegistro, index) {
+    // Trova il registro con l'id dato
+    const riga = this.righe.find(r => r.id === idRegistro);
+    
+    if (riga) {
+        // Rimuove il dettaglio dall'array usando l'indice
+        riga.dettagli.splice(index, 1);
+        
+        // Salva i dati aggiornati
+        this.salvaDati();
+    } else {
+        console.error("Registro non trovato");
+    }
+}
+
 }
 
 export default GestoreRighe;

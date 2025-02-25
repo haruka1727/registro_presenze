@@ -1,7 +1,15 @@
 <template>
     <div class="container">
-      <h1>Registro presenze</h1>
-      <v-btn class="add-button" @click="apriModale">Aggiungi Registro</v-btn>
+
+      <v-row class="justify-center mt-4">
+        <v-col cols="auto">
+          <h1>Registro presenze</h1>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn class="add-button" @click="apriModale" icon="mdi-plus" color="secondary"></v-btn>
+        </v-col>
+      </v-row>
+
       <modal-add-row ref="modale" title="Aggiungi Registro" @salva="aggiungiRegistro">
         <v-form ref="form">
           <v-text-field 
@@ -31,25 +39,25 @@
         </v-form>   
       </modal-add-row>
       
-      <table class="table">
+      <table class="table mt-10">
         <thead>
           <tr>
             <th>Titolo</th>
             <th>Ore Totali</th>
-            <th>Percentuale Presenza</th>
+            <th>Presenza</th>
             <th>Ore giornaliere</th>
             <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(registro, index) in registri" :key="index" class="clickable-row">
+          <tr v-for="(registro, index) in registri" :key="index">
             <td>{{ registro.title }}</td>
             <td>{{ registro.hours }}</td>
             <td>{{ registro.perc}}%</td>
             <td>{{ registro.hoursDay}}</td>
             <td>
-              <v-btn @click="vaiADettagli(registro)">Dettagli</v-btn>
-              <v-btn @click.stop="rimuoviRiga(registro.id)">Elimina</v-btn>
+              <v-btn @click="vaiADettagli(registro)" icon="mdi-list-box" color="primary"></v-btn>
+              <v-btn @click.stop="rimuoviRiga(registro.id)"icon="mdi-delete" class="ml-2" color="secondary"></v-btn>
             </td>
           </tr>
           <tr v-if="registri.length === 0">
@@ -127,16 +135,10 @@
   .container {
     text-align: center;
   }
-  
-  .table {
-    margin: 20px auto;
-    border-collapse: collapse;
-    width: 50%;
-  }
-  
+
   .table th,
   .table td {
-    border: 1px solid black;
+    border: 1px solid rgb(4, 91, 132);
     padding: 10px;
     text-align: center;
   } 

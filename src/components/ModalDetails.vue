@@ -1,22 +1,23 @@
 <template>
   <v-dialog v-model="isOpen" max-width="1000px">
     <v-card>
-      <v-card-title class="container">
-        <strong>Nome Registro:</strong> {{ registro?.title }}
-      </v-card-title>
-
+      <v-row class="justify-center mt-4">
+        <v-col cols="auto">
+          <v-card-title class="ml-4 mt-4 text-center" style="font-size: 30px;">Nome Registro: {{ registro?.title }}</v-card-title>
+        </v-col>
+      </v-row>
 
         <!-- Mostra ore totali e percentuale -->
-        <div class="totali">
-          <p><strong>Ore Totali:</strong> {{ oreTotali }}</p>
-          <p><strong>Minuti Totali:</strong> {{ minutiTotali }}</p>
-          <p><strong>Percentuale presenza:</strong> {{ percentualePresenza.toFixed(2) }}%</p>
+        <div class="totali d-flex justify-center align-center">
+          <p class="mr-4"><strong>Ore Totali:</strong> {{ oreTotali }}</p>
+          <p class="mr-4"><strong>Minuti Totali:</strong> {{ minutiTotali }}</p>
+          <p class="mr-4"><strong>Percentuale presenza:</strong> {{ percentualePresenza.toFixed(2) }}%</p>
           <p><strong>Assenza totali:</strong> {{ oreAssenzaTotali }} di {{ oreAssenzaPossibili }}</p>
-          
         </div>
 
+
       <v-card-text>
-        <v-form ref="form">
+        <v-form ref="form" class="ml-16">
           <v-row>
             <v-col cols="3">
               <v-text-field
@@ -44,12 +45,12 @@
               ></v-text-field>
             </v-col>
             <v-col cols="3">
-              <v-btn @click="aggiungiDettaglio">Aggiungi</v-btn>
+              <v-btn @click="aggiungiDettaglio" icon="mdi-plus" color="secondary"></v-btn>
             </v-col>
           </v-row>
         </v-form>
 
-        <v-table class="table">
+        <table class="table">
           <thead>
             <tr>
               <th>Data</th>
@@ -64,14 +65,14 @@
               <td>{{ riga.nuoveOre }}</td>
               <td>{{ riga.nuoviMinuti }}</td>
               <td>
-                <v-btn color="red" small @click="rimuoviRiga(index)">Elimina</v-btn>
+                <v-btn color="secondary" small @click="rimuoviRiga(index)" icon="mdi-delete"></v-btn>
               </td>
             </tr>
             <tr v-if="registroDettagli.length === 0">
               <td colspan="4">Nessun dettaglio presente.</td>
             </tr>
           </tbody>
-        </v-table>
+        </table>
 
       </v-card-text>
       <v-card-actions>
@@ -185,6 +186,11 @@ defineExpose({ apri });
   text-align: center;
 }
 
+.totali {
+  text-align: center;
+  margin-top: 20px;
+}
+
 .table {
   margin: 20px auto;
   border-collapse: collapse;
@@ -193,13 +199,14 @@ defineExpose({ apri });
 
 .table th,
 .table td {
-  border: 1px solid black;
+  border: 1px solid rgb(4, 91, 132);
   padding: 10px;
   text-align: center;
+  vertical-align: middle; /* Assicura che il testo sia allineato verticalmente al centro */
 }
 
-.totali {
-  text-align: center;
-  margin-top: 20px;
+.table th {
+  font-weight: bold; /* Aggiungi un po' di enfasi al testo dell'intestazione */
 }
+
 </style>

@@ -1,10 +1,11 @@
-/**
- * src/styles/settings.scss
- *
- * Configures SASS variables and Vuetify overwrites
- */
+.v-application {
+    background-color: #B2DFDB;  
+}
 
-// https://vuetifyjs.com/features/sass-variables/`
-// @use 'vuetify/settings' with (
-//   $color-pack: false
-// );
+.table {
+  margin: 30px auto;
+  border-collapse: collapse;
+  width: 90%;
+  background-color: #ffffff;
+}
+

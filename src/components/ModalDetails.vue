@@ -9,10 +9,11 @@
           <v-form ref="form">
             <v-row>
               <v-col cols="3">
-                <v-text-field 
-                  v-model="nuovaData" 
-                  label="Data" 
+                <v-text-field
+                  v-model="nuovaData"
+                  label="Data"
                   variant="outlined"
+                  type="date"
                   :rules="[v => !!v || 'Campo obbligatorio']"
                 ></v-text-field>
               </v-col>
@@ -71,7 +72,7 @@
   </template>
   
   <script setup>
-  import { ref, defineExpose } from "vue";
+  import { ref, defineExpose, nextTick } from "vue";
   import GestoreRighe from "../componentsjs/GestoreRighe"; // Importa il tuo gestore
   
   // Crea un'istanza del gestore per gestire i dati
@@ -96,31 +97,37 @@
     isOpen.value = false;
   };
 
-  const aggiungiDettaglio = async () => {
-    const { valid } = await form.value.validate(); // Usa await per attendere la validazione (il validate restituisce una promise)
 
-      if (!valid) {
-          console.log("Errore: dati non validi!");
-          return; // Esce dalla funzione se i dati non sono validi
-      }
+const aggiungiDettaglio = async () => {
+    await nextTick(); // Assicura che il form sia completamente renderizzato
+    const { valid } = await form.value.validate(); 
 
-      console.log("Dati validi, aggiungo il dettaglio!");
-      
-      const dizionario = {
-          nuovaData: nuovaData.value,
-          nuoveOre: nuoveOre.value,
-          nuoviMinuti: nuoviMinuti.value
-      };
+    if (!valid) {
+        console.log("Errore: dati non validi!");
+        return; // Esce dalla funzione se i dati non sono validi
+    }
 
-      // Aggiungi la riga dettagli alla lista
-      gestore.aggiungiRigaDettagli(registro.value.id, dizionario);
-      registroDettagli.value.push(dizionario);
+    console.log("Dati validi, aggiungo il dettaglio!");
 
-      // Pulisci i campi dopo aver aggiunto i dati
-      nuovaData.value = '';
-      nuoveOre.value = '';
-      nuoviMinuti.value = '';
-  };
+    const dizionario = {
+        nuovaData: nuovaData.value,
+        nuoveOre: nuoveOre.value,
+        nuoviMinuti: nuoviMinuti.value
+    };
+
+    // Aggiungi la riga dettagli alla lista
+    gestore.aggiungiRigaDettagli(registro.value.id, dizionario);
+    registroDettagli.value.push(dizionario);
+
+    // Pulisci i campi dopo aver aggiunto i dati
+    nuovaData.value = '';
+    nuoveOre.value = '';
+    nuoviMinuti.value = '';
+
+    // Resetta la validazione dopo aver svuotato i campi
+    await nextTick();
+    form.value.resetValidation();
+};
 
   
     const rimuoviRiga = (index) => {

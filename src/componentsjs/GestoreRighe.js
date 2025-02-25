@@ -16,9 +16,9 @@ class GestoreRighe {
   }
 
   // Aggiunge un registro
-  aggiungiRiga(titleRow) {
+  aggiungiRiga(titleRow, totalHours, percentage, hoursPerDay) {
     const nuovoID = this.righe.length + 1; // Genera un nuovo ID
-    this.righe.push({ id: nuovoID, title: titleRow, dettagli: [] }); // Inizializza con array vuoto di dettagli
+    this.righe.push({ id: nuovoID, title: titleRow, hours: totalHours , perc: percentage, hoursDay: hoursPerDay, dettagli: [] }); // Inizializza con array vuoto di dettagli
     this.salvaDati();
   }
 

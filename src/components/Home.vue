@@ -10,6 +10,24 @@
             variant="outlined"
             :rules="[v => !!v || 'Campo obbligatorio']">
           </v-text-field>
+          <v-text-field 
+            v-model="oreTotali" 
+            label="Ore totali"
+            variant="outlined"
+            :rules="[v => !!v || 'Campo obbligatorio', v => /^\d+$/.test(v) || 'Deve essere un numero']">
+          </v-text-field>
+          <v-text-field 
+            v-model="percentualePresenza" 
+            label="Percentuale presenza"
+            variant="outlined"
+            :rules="[v => !!v || 'Campo obbligatorio', v => /^\d+$/.test(v) || 'Deve essere un numero']">
+          </v-text-field>
+          <v-text-field 
+            v-model="oreGiornaliere" 
+            label="Ore giornaliere"
+            variant="outlined"
+            :rules="[v => !!v || 'Campo obbligatorio', v => /^\d+$/.test(v) || 'Deve essere un numero']">
+          </v-text-field>
         </v-form>   
       </modal-add-row>
       
@@ -17,19 +35,25 @@
         <thead>
           <tr>
             <th>Titolo</th>
+            <th>Ore Totali</th>
+            <th>Percentuale Presenza</th>
+            <th>Ore giornaliere</th>
             <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(registro, index) in registri" :key="index" class="clickable-row">
             <td>{{ registro.title }}</td>
+            <td>{{ registro.hours }}</td>
+            <td>{{ registro.perc}}%</td>
+            <td>{{ registro.hoursDay}}</td>
             <td>
               <v-btn @click="vaiADettagli(registro)">Dettagli</v-btn>
               <v-btn @click.stop="rimuoviRiga(registro.id)">Elimina</v-btn>
             </td>
           </tr>
           <tr v-if="registri.length === 0">
-            <td colspan="2">Nessun registro presente.</td>
+            <td colspan="4">Nessun registro presente.</td>
           </tr>
         </tbody>
       </table>
@@ -46,6 +70,9 @@
   const gestore = new GestoreRighe();
   const registri = ref([]);
   const nuovoTitolo = ref(''); // Variabile per il titolo del nuovo registro
+  const oreTotali = ref(''); 
+  const percentualePresenza = ref('');
+  const oreGiornaliere = ref('')
   const modale = ref(null); // Riferimento alla modale
   const modalDetails = ref(null); // Riferimento alla modale
   const form = ref(null);
@@ -61,9 +88,14 @@
             console.log("Errore: dati non validi!");
             return; // Esce dalla funzione se i dati non sono validi
           }
-        gestore.aggiungiRiga(nuovoTitolo.value);
+        gestore.aggiungiRiga(nuovoTitolo.value, oreTotali.value, percentualePresenza.value, oreGiornaliere.value);
         registri.value = [...gestore.righe]; // Forza la reattività
         nuovoTitolo.value = ''; 
+        oreTotali.value = ''; 
+        percentualePresenza.value = '';
+        oreGiornaliere.value = '';
+
+
         await nextTick();
         form.value.resetValidation()
         // Chiude la modale solo dopo la validazione

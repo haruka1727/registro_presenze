@@ -3,7 +3,14 @@
       <h1>Registro presenze</h1>
       <v-btn class="add-button" @click="apriModale">Aggiungi Registro</v-btn>
       <modal-add-row ref="modale" title="Aggiungi Registro" @salva="aggiungiRegistro">
-        <v-text-field v-model="nuovoTitolo" label="Titolo"></v-text-field>
+        <v-form ref="form">
+          <v-text-field 
+            v-model="nuovoTitolo" 
+            label="Titolo"
+            variant="outlined"
+            :rules="[v => !!v || 'Campo obbligatorio']">
+          </v-text-field>
+        </v-form>   
       </modal-add-row>
       
       <table class="table">
@@ -41,15 +48,26 @@
   const nuovoTitolo = ref(''); // Variabile per il titolo del nuovo registro
   const modale = ref(null); // Riferimento alla modale
   const modalDetails = ref(null); // Riferimento alla modale
+  const form = ref(null);
   
     const caricaRegistri = () => {
         registri.value = gestore.righe;
     };
   
-    const aggiungiRegistro = () => {
+    const aggiungiRegistro = async () => {
+        await nextTick(); // Assicura che il form sia completamente renderizzato
+        const { valid } = await form.value.validate(); 
+          if (!valid) {
+            console.log("Errore: dati non validi!");
+            return; // Esce dalla funzione se i dati non sono validi
+          }
         gestore.aggiungiRiga(nuovoTitolo.value);
         registri.value = [...gestore.righe]; // Forza la reattività
         nuovoTitolo.value = ''; 
+        await nextTick();
+        form.value.resetValidation()
+        // Chiude la modale solo dopo la validazione
+        modale.value.chiudi(); 
     };
 
     const rimuoviRiga = (registroId) => {

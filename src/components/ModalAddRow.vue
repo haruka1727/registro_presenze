@@ -33,10 +33,9 @@ const chiudi = () => {
 
 const salva = () => {
   emits('salva'); // Emette un evento quando si salva
-  chiudi();
 };
 
-defineExpose({ apri });
+defineExpose({ apri, chiudi });
 </script>
 
 <style scoped>

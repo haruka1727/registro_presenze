@@ -61,7 +61,7 @@
             </td>
           </tr>
           <tr v-if="registri.length === 0">
-            <td colspan="4">Nessun registro presente.</td>
+            <td colspan="5">Nessun registro presente.</td>
           </tr>
         </tbody>
       </table>
